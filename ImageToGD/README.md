@@ -1,22 +1,27 @@
 # GtGD
 
-Converts [Geometrize](https://www.geometrize.co.uk/) JSON file to a [spwn](https://github.com/Spu7Nix/sPWN-language/) file
+Converts [Geometrize](https://www.geometrize.co.uk/) JSON file to a [spwn](https://github.com/Spu7Nix/SPWN-language/) file
 
 Supports:
-- [X] Circles
-- [ ] Elipses
-- [ ] Lines
-- [ ] Polylines (Unlikely)
-- [ ] Quadratic Beziers (Unlikely)
-- [ ] Rectangles
-- [ ] Rotated Elipses
-- [ ] Rotated Rectangles
-- [ ] Triangles
+| Shape              | JSON | SVG |
+|:-------------------|:----:|:---:|
+| Circle             | ✔    | ✔  |
+| Ellipses           | ✔    | ✔  |
+| Lines              | ✘    | ✘  |
+| Polylines          | ✘    | ✘  |
+| Quadratic Beziers  | ✘    | ✘  |
+| Rectangles         | ✘*   | ✘  |
+| Rotated Ellipses   | ✘    | ✔^ |
+| Rotated Rectangles | ✘    | ✘  |
+| Triangles          | ✘    | ✘  |
+
+*Yes, but only when perfect square (which from my small test 44/1000 shapes are) position is also wrong
+^Rotated objects need to be horizontally flipped
 
 ## Prerequisites
 
 - [Geometrize](https://www.geometrize.co.uk/)
-- [spwn](https://github.com/Spu7Nix/sPWN-language/)
+- [spwn](https://github.com/Spu7Nix/SPWN-language/)
 
 ## Usage
 

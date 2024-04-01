@@ -7,14 +7,14 @@ Converts Geometry Data to spwn code, which then allows you to use it in Geometry
 \{"type":(\d+), "data":\[(\d+),(\d+),(\d+),?(\d+)?\],"color":\[(\d+),(\d+),(\d+),128\],.*\},?
          1               2     3     4      5                  6     7     8
 
-$.add(obj {OBJ_ID: 1764, X: 56, Y: 46, SCALING: 21, HVS: "358.06551612903223a0.15422885572139305a0.7882352941176471a1a1", HVS_ENABLED: true, Z_ORDER: 2,})
+add(obj {OBJ_ID: 1764, X: 56, Y: 46, SCALING: 21, HVS: "358.06551612903223a0.15422885572139305a0.7882352941176471a1a1", HVS_ENABLED: true, Z_ORDER: 2,})
 
 Shapes (type conversion) - See README for supported shapes:
 1 -> 211 (Rectangle)
 2 -> 211 (Rotated Rectangle)
 4 -> 693 (Triangle)
-8 -> 1764 (Elipses)
-16 -> 1764 (Rotated Elipses)
+8 -> 1764 (Ellipses)
+16 -> 1764 (Rotated Ellipses)
 32 -> 1764 (Circle)
 64 -> 468 (Line)
 128 -> (Quadratic Beziers)
@@ -32,16 +32,24 @@ if (fileName = "")
 objFile := FileRead(fileName)
 RegexMatch(fileName, "\.(.*)$", &fileExt)
 
-Script := "extract obj_props`n"
+Script := "extract $; extract obj_props`n"
 if (fileExt[1] = "json") {
     Loop Parse objFile, "`n" {
         found := RegexMatch(A_LoopField, '\{"type":(\d+), "data":\[(\d+),(\d+),(\d+),?(\d+)?\],"color":\[(\d+),(\d+),(\d+),128\],.*\},?', &GDObj)
         if (!found)
             Continue
-        if (GDObj[1] = 32) { ; Circle
-            Script .= "$.add(obj {OBJ_ID: 1764, X: " GDObj[2] ", Y: "  GDObj[3] ", SCALING: " GDObj[4] / 4 ", HVS: `"" RGBToHSV(GDObj[6], GDObj[7], GDObj[8]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n"
+        if (GDObj[1] = 1) { ; Rectangle
+            if (GDObj[4] = GDObj[5]) { ; If width and height same
+                Script .= "add(obj {OBJ_ID: 211, X: " GDObj[2] ", Y: " GDObj[3] ", SCALING: " GDObj[4] / 130 ", HVS: `"" RGBToHSV(GDObj[6], GDObj[7], GDObj[8]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n"
+            } else {
+                Script .= "print(`"Skipping non-square quadrilateral`")`n"
+            }
+        } else if (GDObj[1] = 8) { ; Ellipses
+            Script .= "add(obj {OBJ_ID: 1764, X: " GDObj[2] ", Y: " GDObj[3] ", 128: " GDObj[4] / 4 ", 129: " GDObj[5] / 4 ", HVS: `"" RGBToHSV(GDObj[6], GDObj[7], GDObj[8]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n"
+        } else if (GDObj[1] = 32) { ; Circle
+            Script .= "add(obj {OBJ_ID: 1764, X: " GDObj[2] ", Y: "  GDObj[3] ", SCALING: " GDObj[4] / 4 ", HVS: `"" RGBToHSV(GDObj[6], GDObj[7], GDObj[8]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n"
         } else {
-            Script .= "$.print(`"Unsupported Object: " GDObj[1] "`")"
+            Script .= "print(`"Unsupported Object: " GDObj[1] "`")"
         }
     }
 } else if (fileExt[1] = "svg") {
@@ -49,10 +57,14 @@ if (fileExt[1] = "json") {
         if RegexMatch(A_LoopField, '<(\?xml|\/?svg|rect.*?id="0")') { ; xml svg and first rect tag
             Continue
         } else if RegexMatch(A_LoopField, '<circle cx="(\d+)" cy="(\d+)" r="(\d+)".*?fill="rgb\((\d+),(\d+),(\d+)\).*>', &GDObj) {
-            Script .= "$.add(obj {OBJ_ID: 1764, X: " GDObj[1] ", Y: "  GDObj[2] ", SCALING: " GDObj[3] / 4 ", HVS: `"" RGBToHSV(GDObj[4], GDObj[5], GDObj[6]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n"
+            Script .= "add(obj {OBJ_ID: 1764, X: " GDObj[1] ", Y: "  GDObj[2] ", SCALING: " GDObj[3] / 4 ", HVS: `"" RGBToHSV(GDObj[4], GDObj[5], GDObj[6]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n"
+        } else if RegexMatch(A_LoopField, '^<ellipse cx="(\d+)" cy="(\d+)" rx="(\d+)" ry="(\d+).*?fill="rgb\((\d+),(\d+),(\d+)\).*>', &GDObj) {
+            Script .= "add(obj {OBJ_ID: 1764, X: " GDObj[1] ", Y: " GDObj[2] ", 128: " GDObj[3] / 4 ", 129: " GDObj[4] / 4 ", HVS: `"" RGBToHSV(GDObj[5], GDObj[6], GDObj[7]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n"
+        } else if RegexMatch(A_LoopField, '<g transform="translate\((\d+) (\d+)\) rotate\((\d+)\) scale\((\d+) (\d+)\)"><ellipse.*?fill="rgb\((\d+),(\d+),(\d+).*>', &GDObj) {
+            Script .= "add(obj {OBJ_ID: 1764, X: " GDObj[1] ", Y: " GDObj[2] ", ROTATION: " GDObj[3] "128: " GDObj[4] / 4 ", 129: " GDObj[5] / 4 ", HVS: `"" RGBToHSV(GDObj[6], GDObj[7], GDObj[8]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index ",})`n" ; H-Flip fix? ", 4: 1, 21: 1, 22: 1011, "
         } else {
             RegexMatch(A_LoopField, '<(.*?) ', &Shape)
-            Script .= "$.print(`"Unsupported Object: " Shape[1] "`")"
+            Script .= "print(`"Unsupported Object: " Shape[1] "`")"
         }
     }
 }
