@@ -7,16 +7,15 @@ Supports:
 |:-------------------|:----:|:---:|
 | Circle             | ✔    | ✔  |
 | Ellipses           | ✔    | ✔  |
-| Lines              | ✘    | ✘  |
+| Lines              | ✘    | ✔  |
 | Polylines          | ✘    | ✘  |
 | Quadratic Beziers  | ✘    | ✘  |
-| Rectangles         | ✘*   | ✘  |
-| Rotated Ellipses   | ✘    | ✔^ |
+| Rectangles         | ✔*   | ✘  |
+| Rotated Ellipses   | ✘    | ✔  |
 | Rotated Rectangles | ✘    | ✘  |
 | Triangles          | ✘    | ✘  |
 
-*Yes, but only when perfect square (which from my small test 44/1000 shapes are) position is also wrong
-^Rotated objects need to be horizontally flipped
+*Positions and scale are wrong
 
 ## Prerequisites
 
