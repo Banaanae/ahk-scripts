@@ -7,7 +7,7 @@ Supports:
 |:-------------------|:----:|:---:|
 | Circle             | ✔    | ✔  |
 | Ellipses           | ✔    | ✔  |
-| Lines              | ✘    | ✔  |
+| Lines              | ✔    | ✔  |
 | Polylines          | ✘    | ✘  |
 | Quadratic Beziers  | ✘    | ✘  |
 | Rectangles         | ✔*   | ✘  |
