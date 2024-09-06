@@ -11,7 +11,7 @@ Supports:
 | Polylines          | ✘    | ✘  |
 | Quadratic Beziers  | ✘    | ✘  |
 | Rectangles         | ✔*   | ✘  |
-| Rotated Ellipses   | ✘    | ✔  |
+| Rotated Ellipses   | ✔    | ✔  |
 | Rotated Rectangles | ✘    | ✘  |
 | Triangles          | ✘    | ✘  |
 

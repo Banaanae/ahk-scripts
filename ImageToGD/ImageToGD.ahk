@@ -13,6 +13,18 @@ Shapes (type conversion) - See README for supported shapes:
 128 -> (Quadratic Beziers)
 256 -> (multiple?) 468 (Polyline)
 */
+{ ; Settings
+    spwnCheck := 1
+}
+
+MsgRes := ""
+if !FileExist("C:\Program Files (x86)\spwn\spwn.exe") and spwnCheck
+    MsgRes := MsgBox("It appears spwn is not installed,`nPlease install at https://github.com/Spu7Nix/SPWN-language/releases`n Would you like to go there now?`n`nNote: If spwn is installed please set the `"spwnCheck`" variable to false.`nOr just press No to bypass", "spwn not installed", 52)
+
+if (MsgRes = "Yes") {
+    Run("https://github.com/Spu7Nix/SPWN-language/releases")
+    ExitApp
+}
 
 try FileDelete("BuildImage.spwn")
 
@@ -38,7 +50,7 @@ if (fileExt[1] = "json") {
         } else if (GDObj[1] = 8) { ; Ellipses
             Script .= "add(obj {OBJ_ID: 1764, X: " GDObjData[1] ", Y: " GDObjData[2] ", 128: " GDObjData[3] / 4 ", 129: " GDObjData[4] / 4 ", HVS: `"" RGBToHSV(GDObj[2], GDObj[3], GDObj[4]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index "})`n"
         } else if (GDObj[1] = 16) { ; Rotated Ellipses
-            Script .= "add(obj {OBJ_ID: 1764, X: " GDObjData[1] ", Y: " GDObjData[2] ", ROTATION: " 0-(GDObjData[5]) ", 128: " GDObjData[3] / 4 ", HVS: `"" RGBToHSV(GDObj[2], GDObj[3], GDObj[4]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index "})`n"
+            Script .= "add(obj {OBJ_ID: 1764, X: " GDObjData[1] ", Y: " GDObjData[2] ", ROTATION: " 0-(GDObjData[5]) ", 128: " GDObjData[3] / 4 ", 129: " GDObjData[4] / 4 ", HVS: `"" RGBToHSV(GDObj[2], GDObj[3], GDObj[4]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index "})`n"
         } else if (GDObj[1] = 32) { ; Circle
             Script .= "add(obj {OBJ_ID: 1764, X: " GDObjData[1] ", Y: "  GDObjData[2] ", SCALING: " GDObjData[3] / 4 ", HVS: `"" RGBToHSV(GDObj[2], GDObj[3], GDObj[4]) "`", HVS_ENABLED: true, Z_ORDER: " A_Index "})`n"
         } else if (GDObj[1] = 64) { ; Line
